@@ -1,15 +1,18 @@
 #include"main.h" 
-int Comp(Node* n, Node* m, int i)
+typedef int(*BYFUN)(Node*, Node*);
+int ByNumb(Node* n, Node* m)
 {
-	if (i == 1)
-		return n->data.nNumb < m->data.nNumb;
-	if (i == 2)
-		return strcmp(n->data.sName, m->data.sName) < 0;
-	if (i == 3)
-		return n->data.fSalary < m->data.fSalary;
-	return 0;
+	return n->data.nNumb < m->data.nNumb;
 }
-void Sort(int i)
+int ByName(Node* n, Node* m)
+{
+	return strcmp(n->data.sName, m->data.sName) < 0;
+}
+int BySalary(Node* n, Node* m)
+{
+	return n->data.fSalary < m->data.fSalary;
+}
+void Sort(BYFUN fun)
 {
 	Node* p = GetHead();	
 	while (p)
@@ -17,7 +20,7 @@ void Sort(int i)
 		Node *m = p, *n = p;
 		while (n = n->pNext)
 		{
-			if (Comp(n, m, i))
+			if (fun(n, m))
 			{
 				m = n;
 			}			
@@ -31,49 +34,8 @@ void Sort(int i)
 		p = p->pNext;
 	}	
 }
-void SortByName()
-{
-	//int nCount = GetCount();
-	//SWorker* p = GetData();
-	//int i = -1;
-	//--nCount;
-	//while (++i < nCount)
-	//{
-	//	int j = -1;
-	//	while (++j < nCount-i)
-	//	{
-	//		if (strcmp(p[j].sName, p[j + 1].sName) > 0)
-	//		{
-	//			SWorker t = p[j];
-	//			p[j] = p[j+1];
-	//			p[j+1] = t;
-	//		}
-	//	}		
-	//}
-	//Print();
-}
-void SortBySalary()
-{
-	//int nCount = GetCount();
-	//SWorker* p = GetData();
-	//int i = -1;
-	//while (++i < nCount)
-	//{
-	//	int j = i, m = i;
-	//	while (++j < nCount)
-	//	{
-	//		if (p[j].fSalary < p[m].fSalary)
-	//			m = j;
-	//	}
-	//	if (m != i)
-	//	{
-	//		SWorker t = p[m];
-	//		p[m] = p[i];
-	//		p[i] = t;
-	//	}
-	//}
-	//Print();
-}
+
+
 int PrintMenu()
 {
 	system("cls");
@@ -88,14 +50,11 @@ int PrintMenu()
 	printf("ÇëÑ¡Ôñ£º");
 	int i = 0;
 	scanf_s("%d", &i);
-	switch (i)
+	BYFUN ByFun[] = { ByNumb,ByName,BySalary };
+	if (i > 0 && i < 4)
 	{
-	case 1:		
-	case 2:		
-	case 3:
-		Sort(i);
+		Sort(ByFun[i - 1]);
 		Print();
-	
-	}
+	}	
 	return i;
 }
